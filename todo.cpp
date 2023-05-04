@@ -23,6 +23,7 @@ int main(int argc, char* argv[]){
 	int option, param;
 	bool flag_add = false;
 	bool flag_delete = false;
+    std::string filepath = ".todo.dat";
 
 	while((option = getopt(argc, argv, "ar:")) != -1){
 		switch(option){
@@ -41,11 +42,25 @@ int main(int argc, char* argv[]){
 
 	std::vector<Task> tasks;
 
-	std::ifstream in_file(".todo.dat");
+	std::ifstream in_file(filepath);
 	if(!in_file.is_open()){
-		std::cout << "Unable to open data file.\n";
-		exit(EXIT_FAILURE);
-		//Condsider providing option to create data file or enter file path.
+		char selection;
+        std::cout << filepath << " not found.\n";
+        std::cout << "Would you like to create a new data file?(y/n)";
+		std::cin >> selection;
+        if(selection == 'y' || selection == 'Y'){
+            std::ofstream file(filepath);
+            if(!file.is_open()){
+                std::cerr << "Unable to create " << filepath << std::endl;
+                exit(EXIT_FAILURE);
+            }
+            else {
+                std::cout << "Created " << filepath << std::endl;
+                file.close();
+                in_file.open(filepath);
+            }
+        }
+       else exit(EXIT_FAILURE);
 	}
 
 	//Read File
