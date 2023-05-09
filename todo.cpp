@@ -10,6 +10,7 @@
 #include <sstream>
 #include <unistd.h>
 
+
 struct Task {
 	std::string title;
 	std::string detail;
@@ -25,7 +26,7 @@ int main(int argc, char* argv[]){
 	bool flag_delete = false;
     std::string filepath = ".todo.dat";
 
-	while((option = getopt(argc, argv, "ar:")) != -1){
+	while((option = getopt(argc, argv, "af:r:")) != -1){
 		switch(option){
 			case 'a':
 				flag_add = true;
@@ -33,6 +34,9 @@ int main(int argc, char* argv[]){
 			case 'r':
 				flag_delete = true;
 				param = atoi(optarg);
+				break;
+			case 'f':
+				filepath = optarg;
 				break;
 			default:
 				std::cout << "Usage: " << std::endl;
@@ -43,9 +47,9 @@ int main(int argc, char* argv[]){
 	std::vector<Task> tasks;
 
 	std::ifstream in_file(filepath);
-	if(!in_file.is_open()){
+	if(in_file.fail()){
 		char selection;
-        std::cout << filepath << " not found.\n";
+        std::cout << "Unable to open " << filepath << std::endl;
         std::cout << "Would you like to create a new data file?(y/n)";
 		std::cin >> selection;
         if(selection == 'y' || selection == 'Y'){
@@ -57,12 +61,11 @@ int main(int argc, char* argv[]){
             else {
                 std::cout << "Created " << filepath << std::endl;
                 file.close();
-                in_file.open(filepath);
             }
-        }
+           in_file.close();	
+	}
        else exit(EXIT_FAILURE);
 	}
-
 	//Read File
 	std::string line;
 	while(getline(in_file, line)){
@@ -84,7 +87,7 @@ int main(int argc, char* argv[]){
 	}
 
 	if(flag_delete){
-        	remove_task(&tasks, param);
+        remove_task(&tasks, param);
 	}
 
 
@@ -102,7 +105,7 @@ int main(int argc, char* argv[]){
 	}
 
 	//Rewrite the tasks to the data file
-	std::ofstream out_file(".todo.dat", std::ios::trunc);
+	std::ofstream out_file(filepath, std::ios::trunc);
 	for(int i = 0; i < tasks.size(); i++){
         	out_file << tasks[i].title << "," << tasks[i].detail << std::endl;
 	}
