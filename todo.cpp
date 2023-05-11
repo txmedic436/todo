@@ -2,13 +2,14 @@
 //VERSION: 1.0
 //AUTHOR: TxMedic436
 //DESCRIPTION: A command line tool to help organize your todo lists.
-
+//LICENSE: GPL GNU 3.0
 
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <sstream>
 #include <unistd.h>
+
 
 struct Task {
 	std::string title;
@@ -18,21 +19,29 @@ struct Task {
 //Function Prototypes
 void add_tasks(std::vector<Task>* pTasks);
 void remove_task(std::vector<Task>* pTasks, int i = 0);
+void edit_task(Task* pTask);
 
 int main(int argc, char* argv[]){
 	int option, param;
 	bool flag_add = false;
 	bool flag_delete = false;
-    std::string filepath = ".todo.dat";
+	bool flag_edit = false;
+    	std::string filepath = ".todo.dat";
 
-	while((option = getopt(argc, argv, "ar:")) != -1){
+	while((option = getopt(argc, argv, "ae:f:r:")) != -1){
 		switch(option){
 			case 'a':
 				flag_add = true;
 				break;
+			case 'e':
+				flag_edit = true;
+				param = atoi(optarg);
 			case 'r':
 				flag_delete = true;
 				param = atoi(optarg);
+				break;
+			case 'f':
+				filepath = optarg;
 				break;
 			default:
 				std::cout << "Usage: " << std::endl;
@@ -43,9 +52,9 @@ int main(int argc, char* argv[]){
 	std::vector<Task> tasks;
 
 	std::ifstream in_file(filepath);
-	if(!in_file.is_open()){
+	if(in_file.fail()){
 		char selection;
-        std::cout << filepath << " not found.\n";
+        std::cout << "Unable to open " << filepath << std::endl;
         std::cout << "Would you like to create a new data file?(y/n)";
 		std::cin >> selection;
         if(selection == 'y' || selection == 'Y'){
@@ -57,12 +66,11 @@ int main(int argc, char* argv[]){
             else {
                 std::cout << "Created " << filepath << std::endl;
                 file.close();
-                in_file.open(filepath);
             }
-        }
+           //in_file.close();	
+	}
        else exit(EXIT_FAILURE);
 	}
-
 	//Read File
 	std::string line;
 	while(getline(in_file, line)){
@@ -87,6 +95,10 @@ int main(int argc, char* argv[]){
         	remove_task(&tasks, param);
 	}
 
+	if(flag_edit){
+		edit_task(&tasks[param - 1]);
+	}
+
 
 	if(tasks.size() == 0){
 		std::cout << "No tasks to display\n";
@@ -102,7 +114,7 @@ int main(int argc, char* argv[]){
 	}
 
 	//Rewrite the tasks to the data file
-	std::ofstream out_file(".todo.dat", std::ios::trunc);
+	std::ofstream out_file(filepath, std::ios::trunc);
 	for(int i = 0; i < tasks.size(); i++){
         	out_file << tasks[i].title << "," << tasks[i].detail << std::endl;
 	}
@@ -129,7 +141,7 @@ void add_tasks(std::vector<Task> *pTasks){
 }
 
 void remove_task(std::vector<Task> *pTasks, int i){
-    if(i > pTasks->size()){
+    if(i > pTasks->size() || i < 1){
         std::cerr << "Invalid task\n";
         exit(EXIT_FAILURE);
     }
@@ -137,4 +149,23 @@ void remove_task(std::vector<Task> *pTasks, int i){
     else {
         pTasks->erase(pTasks->begin() + (i-1));
     }
+}
+
+
+//Function outputs as excpeted but seems to be deleting the task, need to run the debugger to figure out why
+void edit_task(Task *pTask){
+   std::string buffer;
+	
+   	std::cout << "Current Title: " << pTask->title << std::endl;
+	std::cout << "New Title: ";
+	getline(std::cin, buffer);
+	if(!buffer.empty()){
+		pTask->title = buffer;	
+	}	
+	std::cout << "Current Description: " << pTask->detail << std::endl;
+	std::cout << "New Description: ";
+	getline(std::cin, buffer);
+	if(!buffer.empty()){
+		pTask->detail = buffer;
+	}
 }
