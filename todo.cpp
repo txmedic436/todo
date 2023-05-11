@@ -2,7 +2,7 @@
 //VERSION: 1.0
 //AUTHOR: TxMedic436
 //DESCRIPTION: A command line tool to help organize your todo lists.
-
+//LICENSE: GPL GNU 3.0
 
 #include <iostream>
 #include <vector>
@@ -19,18 +19,23 @@ struct Task {
 //Function Prototypes
 void add_tasks(std::vector<Task>* pTasks);
 void remove_task(std::vector<Task>* pTasks, int i = 0);
+void edit_task(Task* pTask);
 
 int main(int argc, char* argv[]){
 	int option, param;
 	bool flag_add = false;
 	bool flag_delete = false;
-    std::string filepath = ".todo.dat";
+	bool flag_edit = false;
+    	std::string filepath = ".todo.dat";
 
-	while((option = getopt(argc, argv, "af:r:")) != -1){
+	while((option = getopt(argc, argv, "ae:f:r:")) != -1){
 		switch(option){
 			case 'a':
 				flag_add = true;
 				break;
+			case 'e':
+				flag_edit = true;
+				param = atoi(optarg);
 			case 'r':
 				flag_delete = true;
 				param = atoi(optarg);
@@ -62,7 +67,7 @@ int main(int argc, char* argv[]){
                 std::cout << "Created " << filepath << std::endl;
                 file.close();
             }
-           in_file.close();	
+           //in_file.close();	
 	}
        else exit(EXIT_FAILURE);
 	}
@@ -87,7 +92,11 @@ int main(int argc, char* argv[]){
 	}
 
 	if(flag_delete){
-        remove_task(&tasks, param);
+        	remove_task(&tasks, param);
+	}
+
+	if(flag_edit){
+		edit_task(&tasks[param - 1]);
 	}
 
 
@@ -132,7 +141,7 @@ void add_tasks(std::vector<Task> *pTasks){
 }
 
 void remove_task(std::vector<Task> *pTasks, int i){
-    if(i > pTasks->size()){
+    if(i > pTasks->size() || i < 1){
         std::cerr << "Invalid task\n";
         exit(EXIT_FAILURE);
     }
@@ -140,4 +149,23 @@ void remove_task(std::vector<Task> *pTasks, int i){
     else {
         pTasks->erase(pTasks->begin() + (i-1));
     }
+}
+
+
+//Function outputs as excpeted but seems to be deleting the task, need to run the debugger to figure out why
+void edit_task(Task *pTask){
+   std::string buffer;
+	
+   	std::cout << "Current Title: " << pTask->title << std::endl;
+	std::cout << "New Title: ";
+	getline(std::cin, buffer);
+	if(!buffer.empty()){
+		pTask->title = buffer;	
+	}	
+	std::cout << "Current Description: " << pTask->detail << std::endl;
+	std::cout << "New Description: ";
+	getline(std::cin, buffer);
+	if(!buffer.empty()){
+		pTask->detail = buffer;
+	}
 }
