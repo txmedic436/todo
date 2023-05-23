@@ -10,162 +10,64 @@
 #include <sstream>
 #include <unistd.h>
 
+#include "list.h"
 
-struct Task {
-	std::string title;
-	std::string detail;
-};
-
-//Function Prototypes
-void add_tasks(std::vector<Task>* pTasks);
-void remove_task(std::vector<Task>* pTasks, int i = 0);
-void edit_task(Task* pTask);
 
 int main(int argc, char* argv[]){
-	int option, param;
+	int option, delete_param, edit_param;
+	std::string filepath = ".todo.dat";
 	bool flag_add = false;
 	bool flag_delete = false;
 	bool flag_edit = false;
-    	std::string filepath = ".todo.dat";
 
-	while((option = getopt(argc, argv, "ae:f:r:")) != -1){
+	while((option = getopt(argc, argv, "a:f:r:")) != -1){
 		switch(option){
 			case 'a':
 				flag_add = true;
 				break;
 			case 'e':
 				flag_edit = true;
-				param = atoi(optarg);
+				edit_param = atoi(optarg) - 1;
 			case 'r':
 				flag_delete = true;
-				param = atoi(optarg);
+				delete_param = atoi(optarg);
 				break;
 			case 'f':
 				filepath = optarg;
 				break;
 			default:
 				std::cout << "Usage: " << std::endl;
+				exit(EXIT_FAILURE);
 		}
 	}
-
-
-	std::vector<Task> tasks;
-
-	std::ifstream in_file(filepath);
-	if(in_file.fail()){
-		char selection;
-        std::cout << "Unable to open " << filepath << std::endl;
-        std::cout << "Would you like to create a new data file?(y/n)";
-		std::cin >> selection;
-        if(selection == 'y' || selection == 'Y'){
-            std::ofstream file(filepath);
-            if(!file.is_open()){
-                std::cerr << "Unable to create " << filepath << std::endl;
-                exit(EXIT_FAILURE);
-            }
-            else {
-                std::cout << "Created " << filepath << std::endl;
-                file.close();
-            }
-           //in_file.close();	
-	}
-       else exit(EXIT_FAILURE);
-	}
-	//Read File
-	std::string line;
-	while(getline(in_file, line)){
-        Task buffer = {};
-        std::stringstream linestream(line);
-        std::string value;
 	
-        getline(linestream, value, ',');
-        buffer.title = value;
-        getline(linestream, value);
-        buffer.detail = value;
-        tasks.push_back(buffer);
-	}
-
-	in_file.close();
-
+	List tasklist(filepath);
+	
+	//Start to actions on task list, order of the functions is important
 	if(flag_add){
-		add_tasks(&tasks);
+		std::string title, detail;
+		unsigned priority;
+		std::cout << "Add task\nTitle: ";
+		getline(std::cin, title);
+		std::cout << "Add detail: ";
+		getline(std::cin, detail);
+		std::cout << "Priority: ";
+		std::cin >> priority;
+		tasklist.Add({title, detail, priority});
 	}
 
 	if(flag_delete){
-        	remove_task(&tasks, param);
+		tasklist.RemoveTask(delete_param);
 	}
 
 	if(flag_edit){
-		edit_task(&tasks[param - 1]);
+		tasklist.EditTask(edit_param);	
 	}
 
-
-	if(tasks.size() == 0){
-		std::cout << "No tasks to display\n";
-		exit(EXIT_SUCCESS);
-	}
-
-	//Display the tasks on the screen
-	for(int i = 0; i < tasks.size(); i++){
-		std::cout << i+1 << ": " << tasks[i].title << "\n";
-	       	if(!tasks[i].detail.empty()){
-			std::cout << "\t" << tasks[i].detail << std::endl;
-		}
-	}
-
-	//Rewrite the tasks to the data file
-	std::ofstream out_file(filepath, std::ios::trunc);
-	for(int i = 0; i < tasks.size(); i++){
-        	out_file << tasks[i].title << "," << tasks[i].detail << std::endl;
-	}
-	out_file.close();
+	//Display tasklist and save to file
+	tasklist.PrintList();
+	tasklist.WriteFile();
 
 	return 0;
-}
 
-void add_tasks(std::vector<Task> *pTasks){
-	std::string title;
-	std::string detail;
-
-	std::cout << "Enter Title: ";
-	getline(std::cin, title);
-	std::cout << "Enter Detail: ";
-	getline(std::cin, detail);
-
-	if(title.empty()){
-        std::cerr << "Task requries a title\n";
-        exit(EXIT_FAILURE);
-	}
-	
-    	pTasks->push_back(Task{title, detail});
-}
-
-void remove_task(std::vector<Task> *pTasks, int i){
-    if(i > pTasks->size() || i < 1){
-        std::cerr << "Invalid task\n";
-        exit(EXIT_FAILURE);
-    }
-
-    else {
-        pTasks->erase(pTasks->begin() + (i-1));
-    }
-}
-
-
-//Function outputs as excpeted but seems to be deleting the task, need to run the debugger to figure out why
-void edit_task(Task *pTask){
-   std::string buffer;
-	
-   	std::cout << "Current Title: " << pTask->title << std::endl;
-	std::cout << "New Title: ";
-	getline(std::cin, buffer);
-	if(!buffer.empty()){
-		pTask->title = buffer;	
-	}	
-	std::cout << "Current Description: " << pTask->detail << std::endl;
-	std::cout << "New Description: ";
-	getline(std::cin, buffer);
-	if(!buffer.empty()){
-		pTask->detail = buffer;
-	}
 }

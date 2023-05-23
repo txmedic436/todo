@@ -23,7 +23,13 @@ void List::Add(Task task){
 }
 
 void List::PrintTask(Task* task){
-	std::cout << task->title << std::endl << "\t" << task->detail << std::endl;
+	if(task->priority < 4){
+		for(unsigned i = 0; i < task->priority; i++){
+			std::cout << "!";
+		}
+	}
+
+	std::cout << " " << task->title << std::endl << "\t" << task->detail << std::endl;
 }
 
 void List::PrintList(){
@@ -46,17 +52,18 @@ void List::RemoveTask(size_t taskID){
 void List::EditTask(size_t taskID){
 	std::string buffer;
 	
-	std::cout << "Current Title: " << m_list.at(taskID - 1).title << std::endl;
+	std::cout << "Current Title: " << m_list.at(taskID).title << std::endl;
 	std::cout << "New Title: ";
 	getline(std::cin, buffer);
 	if(!buffer.empty()){
-		m_list.at(taskID - 1).title = buffer;
+		m_list.at(taskID).title = buffer;
 	}
-	std::cout << "Current Description: " << m_list.at(taskID - 1).detail << std::endl;
+	
+	std::cout << "Current Description: " << m_list.at(taskID).detail << std::endl;
 	std::cout << "New Descritpion: ";
 	getline(std::cin, buffer);
 	if(!buffer.empty()){
-		m_list.at(taskID - 1).detail = buffer;
+		m_list.at(taskID).detail = buffer;
 	}
 }
 
@@ -84,11 +91,15 @@ void List::LoadFile(){
 		Task buffer_task = {};
 		std::stringstream linestream(line);
 		std::string value;
+		unsigned digit;
 
 		getline(linestream, value, ',');
 		buffer_task.title = value;
-		getline(linestream, value);
+		getline(linestream, value, ',');
 		buffer_task.detail = value;
+		//Linstream is not reading the digit.
+		getline(linestream, value);
+		buffer_task.priority = stoi(value);
 		m_list.push_back(buffer_task);
 	}
 
@@ -98,7 +109,7 @@ void List::LoadFile(){
 void List::WriteFile(){
 	m_file.open(m_filepath, std::ios::trunc | std::ios::out);
 	for(int i = 0; i < m_list.size(); i++){
-		m_file << m_list[i].title << "," << m_list[i].detail << std::endl;
+		m_file << m_list[i].title << "," << m_list[i].detail << "," << m_list[i].priority <<  std::endl;
 	}
 	m_file.close();
 }
