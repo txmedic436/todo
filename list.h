@@ -10,6 +10,7 @@
 struct Task {
 	std::string title;
 	std::string detail;
+	size_t priority;
 };
 
 class List {
