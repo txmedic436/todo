@@ -19,6 +19,8 @@ List::List(std::string filepath){
 }
 
 void List::Add(Task task){
+	//Add timestamp
+	task.created_on = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	m_list.push_back(task);
 }
 

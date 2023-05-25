@@ -5,12 +5,14 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-
+#include <ctime>
+#include <chrono>
 
 struct Task {
 	std::string title;
 	std::string detail;
 	size_t priority;
+	time_t created_on;
 };
 
 class List {
