@@ -99,9 +99,15 @@ void List::LoadFile(){
 		buffer_task.title = value;
 		getline(linestream, value, ',');
 		buffer_task.detail = value;
-		//Linstream is not reading the digit.
-		getline(linestream, value);
-		buffer_task.priority = stoi(value);
+		//Linestream is not reading the digit.
+		try {
+			getline(linestream, value);
+			buffer_task.priority = stoi(value);
+		} catch(std::invalid_argument) {
+			std::cerr << "No priority found";
+			buffer_task.priority = 0;
+			}
+
 		m_list.push_back(buffer_task);
 	}
 
