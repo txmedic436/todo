@@ -93,20 +93,20 @@ void List::LoadFile(){
 		Task buffer_task = {};
 		std::stringstream linestream(line);
 		std::string value;
-		unsigned digit;
+		time_t date;
 
 		getline(linestream, value, ',');
 		buffer_task.title = value;
 		getline(linestream, value, ',');
 		buffer_task.detail = value;
-		//Linestream is not reading the digit.
 		try {
-			getline(linestream, value);
+			getline(linestream, value, ',');
 			buffer_task.priority = stoi(value);
 		} catch(std::invalid_argument) {
-			std::cerr << "No priority found";
 			buffer_task.priority = 0;
 			}
+		getline(linestream, value);
+		buffer_task.created_on = stol(value);
 
 		m_list.push_back(buffer_task);
 	}
@@ -117,7 +117,8 @@ void List::LoadFile(){
 void List::WriteFile(){
 	m_file.open(m_filepath, std::ios::trunc | std::ios::out);
 	for(int i = 0; i < m_list.size(); i++){
-		m_file << m_list[i].title << "," << m_list[i].detail << "," << m_list[i].priority <<  std::endl;
+		m_file  << m_list[i].title << "," << m_list[i].detail << "," << m_list[i].priority
+			<< "," << m_list[i].created_on << std::endl;
 	}
 	m_file.close();
 }
