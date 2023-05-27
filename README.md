@@ -12,6 +12,6 @@ usage: todo [options] required_input required_input2
 5/25/23 - Added a timestamp to the creating of each task. time_t, accessable at Task.created_on . 
 
 BUGS:
-
+5/27/23 - When no output file exists and the user adds the -a flag, the program ask the user if they want to create a new file. If they select 'y' it skips the title input and goes stragiht to detail. Easy fix is to terminate the program and have them renter the command but the ideal fix is to eliminate that issue.
 5/24/23 - Edit task function changes the task but seems to be deleting the previous task.
-5/4/23 - Fixed bug which did not allow the creation of a data file. Program now ask user if they want to create a new file.
+
