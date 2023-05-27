@@ -20,7 +20,7 @@ int main(int argc, char* argv[]){
 	bool flag_delete = false;
 	bool flag_edit = false;
 
-	while((option = getopt(argc, argv, "af:r:")) != -1){
+	while((option = getopt(argc, argv, "ae:f:r:")) != -1){
 		switch(option){
 			case 'a':
 				flag_add = true;
@@ -28,6 +28,7 @@ int main(int argc, char* argv[]){
 			case 'e':
 				flag_edit = true;
 				edit_param = atoi(optarg) - 1;
+				break;
 			case 'r':
 				flag_delete = true;
 				delete_param = atoi(optarg);
