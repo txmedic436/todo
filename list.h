@@ -32,6 +32,7 @@ public:
 private:
 	int OpenFile();
 	void LoadFile();
+	std::string DateToString(time_t);
 private:
 	std::fstream m_file;
 	std::string m_filepath;
