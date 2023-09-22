@@ -54,18 +54,18 @@ void List::RemoveTask(size_t taskID){
 void List::EditTask(size_t taskID){
 	std::string buffer;
 	
-	std::cout << "Current Title: " << m_list.at(taskID).title << std::endl;
+	std::cout << "Current Title: " << m_list[taskID-1].title << std::endl;
 	std::cout << "New Title: ";
 	getline(std::cin, buffer);
 	if(!buffer.empty()){
-		m_list.at(taskID).title = buffer;
+		m_list[taskID-1].title = buffer;
 	}
 	
-	std::cout << "Current Description: " << m_list.at(taskID).detail << std::endl;
+	std::cout << "Current Description: " << m_list[taskID -1].detail << std::endl;
 	std::cout << "New Descritpion: ";
 	getline(std::cin, buffer);
 	if(!buffer.empty()){
-		m_list.at(taskID).detail = buffer;
+		m_list[taskID -1].detail = buffer;
 	}
 }
 
@@ -121,6 +121,10 @@ void List::WriteFile(){
 			<< "," << m_list[i].created_on << std::endl;
 	}
 	m_file.close();
+}
+
+size_t List::size(){
+	return m_list.size();
 }
 
 List::~List(){

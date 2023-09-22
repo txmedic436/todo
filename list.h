@@ -26,6 +26,7 @@ public:
 	void PrintTask(Task*);
 	void PrintList();
 	void WriteFile();
+	size_t size();
 public:
 	std::vector<Task> m_list;
 
