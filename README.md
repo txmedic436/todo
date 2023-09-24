@@ -12,6 +12,6 @@ usage: todo [options] required_input required_input2
 9/22/23 - Fixed bug which resulted in deletion of unrealted task, added early error handling into main function to filter out majority of modification OUT_OF_BOUNDS errors.
 5/25/23 - Added a timestamp to the creating of each task. time_t, accessable at Task.created_on . 
 
-BUGS:
+#BUGS
 5/27/23 - When no output file exists and the user adds the -a flag, the program ask the user if they want to create a new file. If they select 'y' it skips the title input and goes stragiht to detail. Easy fix is to terminate the program and have them renter the command but the ideal fix is to eliminate that issue.
 
