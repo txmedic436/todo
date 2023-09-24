@@ -31,7 +31,7 @@ void List::PrintTask(Task* task){
 		}
 	}
 
-	std::cout << " " << task->title << std::endl << "\t" << task->detail << std::endl;
+	std::cout << " " << task->title  << " " << DateToString(task->created_on) << std::endl << "\t" << task->detail << std::endl;
 }
 
 void List::PrintList(){
@@ -39,6 +39,14 @@ void List::PrintList(){
 		std::cout << i + 1 << ": ";
 		PrintTask(&m_list[i]);
 	}
+}
+
+std::string List::DateToString(time_t time){
+	std::tm *t = localtime(&time);
+	char buffer[80];
+	strftime(buffer, 80, "%x", t);
+	std::string s(buffer);
+	return s;
 }
 
 void List::RemoveTask(size_t taskID){
