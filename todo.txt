@@ -1,14 +1,3 @@
-1: Edit Function
-	Add a way for the user to edit an exisiting task
-2: Quick add
-	Add a way for the user to add a task from the command line
-3: Refactoring
-	Need to refactor displaying tasks into function and checking if argument provided for remove and edit is valid. Duplicte code exists
-4: Completion Box
-	Add a compeltion box to mark task complete
-5: Progress Bar
-	Add a progress bar next to title and show progress in 10% increments
-6: Create task list class
-	Add a class that stores tasks in a list and has methods to manipulate the list
-7: Expand Tasks
-	Make the tasks more indepth with date created and priorty. User should be able to sort and view details if they want.
+Edit Function,Add a way for the user to edit an exisiting task,0,0
+Refactoring,Need to refactor displaying tasks into function and checking if argument provided for remove and edit is valid. Duplicte code exists,0,0
+Progress Bar,Add a progress bar next to title and show progress in 10% increments,0,0
