@@ -41,13 +41,13 @@ int main(int argc, char* argv[]){
 				exit(EXIT_FAILURE);
 		}
 	}
-	
+
 	List tasklist(filepath);
 	if(delete_param > tasklist.size() || edit_param > tasklist.size()){
 		std::cerr << "Invalid item number\n";
 		exit(EXIT_FAILURE);
 	}
-	
+
 	//Start to actions on task list, order of the functions is important
 	if(flag_add){
 		std::string title, detail;

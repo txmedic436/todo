@@ -103,15 +103,16 @@ void List::LoadFile(){
 		std::string value;
 		time_t date;
 
-		getline(linestream, value, ',');
+		getline(linestream, value, ';');
 		buffer_task.title = value;
-		getline(linestream, value, ',');
+		getline(linestream, value, ';');
 		buffer_task.detail = value;
 		try {
-			getline(linestream, value, ',');
+			getline(linestream, value, ';');
 			buffer_task.priority = stoi(value);
 		} catch(std::invalid_argument) {
-			buffer_task.priority = 0;
+			std::cerr << "Invalid argument found while loading file\n";
+            buffer_task.priority = 0;
 			}
 		getline(linestream, value);
 		buffer_task.created_on = stol(value);
